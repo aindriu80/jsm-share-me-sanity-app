@@ -4,11 +4,30 @@ import { useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import shareVideo from '../assets/share.mp4'
 import logo from '../assets/logowhite.png'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
+import { client } from '../client'
 
 const Login = () => {
+  const navigate = useNavigate()
   const responseGoogle = (response) => {
     console.log('RESPONSE', response)
+    console.log('Res.Obj', response.Obj)
+    localStorage.setItem('user', JSON.stringify(response.profileObj))
+
+    const { name, googleId, imageUrl } = response.profileObj
+
+    const doc = {
+      _id: googleId,
+      _type: 'user',
+      userName: name,
+      image: imageUrl,
+    }
+    client.createIfNotExists(doc).then(() => {
+      navigate('/', { replace: true })
+    })
   }
+
   return (
     <div className="flex flex-col items-center justify-start h-screen">
       <div className="relative w-full h-full ">
