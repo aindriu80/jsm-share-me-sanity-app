@@ -1,21 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import GoogleLogin from 'react-google-login'
 import { useNavigate } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import shareVideo from '../assets/share.mp4'
+const clientId = import.meta.env.VITE_GOOGLE_API_TOKEN
 import logo from '../assets/logowhite.png'
-import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import { client } from '../client'
+import { gapi } from 'gapi-script'
 
 const Login = () => {
   const navigate = useNavigate()
-  const responseGoogle = (response) => {
-    console.log('RESPONSE', response)
-    console.log('Res.Obj', response.Obj)
-    localStorage.setItem('user', JSON.stringify(response.profileObj))
+  const onSuccess = (res) => {
+    console.log('Login successful! Current user is', res.profileObj)
+    console.log('RESPONSE', res)
+    // console.log('Res.Obj', res.Obj)
+    localStorage.setItem('user', JSON.stringify(res.profileObj))
 
-    const { name, googleId, imageUrl } = response.profileObj
+    const { name, googleId, imageUrl } = res.profileObj
 
     const doc = {
       _id: googleId,
@@ -27,6 +29,18 @@ const Login = () => {
       navigate('/', { replace: true })
     })
   }
+  const onFailure = (res) => {
+    console.log('Login has failed, res is ', res)
+  }
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: clientId,
+        scope: '',
+      })
+    }
+    gapi.load('client:auth2', start)
+  })
 
   return (
     <div className="flex flex-col items-center justify-start h-screen">
@@ -48,7 +62,7 @@ const Login = () => {
 
           <div className="shadow-2xl">
             <GoogleLogin
-              clientId={import.meta.env.VITE_REACT_APP_GOOGLE_API_TOKEN}
+              clientId={clientId}
               render={(renderProps) => (
                 <button
                   type="button"
@@ -59,9 +73,10 @@ const Login = () => {
                   Sign in with Google
                 </button>
               )}
-              onSuccess={responseGoogle}
-              onFailure={responseGoogle}
-              cookiePolicy="single_host_origin"
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+              cookiePolicy={'single_host_origin'}
+              isSignedIn={true}
             />
           </div>
         </div>

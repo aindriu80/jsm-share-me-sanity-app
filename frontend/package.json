@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "gapi-script": "^1.2.0",
     "@react-oauth/google": "^0.2.6",
     "@sanity/client": "^3.3.2",
     "@sanity/image-url": "^1.0.1",
