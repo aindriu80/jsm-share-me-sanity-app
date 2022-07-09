@@ -1,7 +1,7 @@
 import React from 'react'
 
 const Pins = () => {
-  return <div>Pins</div>
+  return <div className="h-full">Pins</div>
 }
 
 export default Pins

@@ -4,25 +4,23 @@ import { AiFillCloseCircle } from 'react-icons/ai'
 import { Link, Route, Routes } from 'react-router-dom'
 
 import Sidebar from '../components/Sidebar'
-import Login from '../components/Login'
 import UserProfile from '../components/UserProfile'
 
-import Pins from './Pins'
 import { userQuery } from '../utils/data'
 
 import { client } from '../client'
+import Pins from './Pins'
 import logo from '../assets/logo.png'
 
 const Home = () => {
   const [toggleSidebar, setToggleSidebar] = useState(false)
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState()
+  const scrollRef = useRef(null)
 
   const userInfo =
     localStorage.getItem('user') !== 'undefined'
       ? JSON.parse(localStorage.getItem('user'))
       : localStorage.clear()
-
-  const scrollRef = useRef(null)
 
   useEffect(() => {
     const query = userQuery(userInfo?.googleId)
