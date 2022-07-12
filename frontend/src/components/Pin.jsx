@@ -44,6 +44,12 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
     }
   }
 
+  const deletePin = (id) => {
+    client.delete(id).then(() => {
+      window.location.reload()
+    })
+  }
+
   return (
     <div className="m-2">
       <div
@@ -87,10 +93,45 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
                 </button>
               )}
             </div>
+            <div className="flex items-center justify-between w-full gap-2">
+              {destination && (
+                <a
+                  href={destination}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 p-2 pl-4 pr-4 font-bold text-black bg-white rounded-full opacity-70 hover:100 hover:shadow-md">
+                  <BsFillArrowUpRightCircleFill />
+                  {destination.length > 20
+                    ? destination.slice(8, 20)
+                    : destination.slice(8)}
+                </a>
+              )}
+              {postedBy?._id === user.googleId && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    deletePin(_id)
+                  }}
+                  className="flex items-center justify-center w-8 h-8 p-2 bg-white rounded-full outline-none opacity-75 text-dark hover:opacity-100">
+                  <AiTwotoneDelete />
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
-    </div>
+        <Link
+        to={`/user-profile/${postedBy?._id}`}
+          className="flex items-center gap-2 mt-2">
+          <img
+            className="object-cover w-8 h-8 rounded-full"
+            src={postedBy?.image}
+            alt="user-profile"
+          />
+          <p className="font-semibold capitalize">{postedBy?.userName}</p>
+        </Link>
+      </div>
   )
 }
 
