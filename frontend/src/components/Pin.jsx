@@ -10,7 +10,6 @@ import { fetchUser } from '../utils/fetchUser'
 
 const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
   const [postHovered, setPostHovered] = useState(false)
-  const [savingPost, setSavingPost] = useState(false)
   const navigate = useNavigate()
   const user = fetchUser()
 
@@ -25,8 +24,6 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
 
   const savePin = (id) => {
     if (!alreadySaved) {
-      setSavingPost(true)
-
       client
         .patch(id)
         .setIfMissing({ save: [] })
@@ -43,7 +40,6 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
         .commit()
         .then(() => {
           window.location.reload()
-          setSavingPost(false)
         })
     }
   }
@@ -76,7 +72,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
               </div>
               {alreadySaved !== 0 ? (
                 <button
-                  type="button "
+                  type="button"
                   className="px-5 py-1 text-base font-bold text-white bg-red-500 opacity-70 hover:100 rounded-3xl hover:shadow-md outlined-none">
                   {save?.length}Saved
                 </button>
