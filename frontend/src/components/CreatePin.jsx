@@ -49,6 +49,38 @@ const CreatePin = ({ user }) => {
       setWrongImageType(true)
     }
   }
+
+  const savePin = () => {
+    if (title && about && destination && imageAsset?._id && category) {
+      const doc = {
+        _type: 'pin',
+        title,
+        about,
+        destination,
+        image: {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: imageAsset?._id,
+          },
+        },
+        userId: user._id,
+        postedBy: {
+          _type: 'postedBy',
+          _ref: user._id,
+        },
+        category,
+      }
+
+      client.create(doc).then(() => {
+        navigate('/')
+      })
+    } else {
+      setFields(true)
+      setTimeout(() => setFields(false), 2000)
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center mt-5 lg:h-4/5">
       {fields && (
@@ -82,8 +114,86 @@ const CreatePin = ({ user }) => {
                 />
               </label>
             ) : (
-              <p>something else</p>
+              <div className="relative h-full">
+                <img
+                  src={imageAsset?.url}
+                  alt="uploaded-pic"
+                  className="w-full h-full"
+                />
+                <button
+                  type="button"
+                  className="absolute p-3 text-xl transition-all ease-in-out bg-white rounded-full outline-none cursor-pointer bottom-3 right-3 hover:shadow-md duration:500"
+                  onClick={() => setImageAsset(null)}>
+                  <MdDelete />
+                </button>
+              </div>
             )}
+          </div>
+        </div>
+
+        <div className="flex flex-col flex-1 w-full gap-6 mt-5 lg:pl-5">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Add your title"
+            className="p-2 text-2xl font-bold border-b-2 border-gray-200 outline-none sm:text-3xl"
+          />
+          {user && (
+            <div className="flex items-center gap-2 mt-2 mb-2 bg-white rounded-lg ">
+              <img
+                src={user.image}
+                className="w-10 h-10 rounded-full"
+                alt="user-profile"
+              />
+              <p className="font-bold">{user.userName}</p>
+            </div>
+          )}
+          <input
+            type="text"
+            value={about}
+            onChange={(e) => setAbout(e.target.value)}
+            placeholder="Tell everyone what your Pin is about"
+            className="p-2 text-base border-b-2 border-gray-200 outline-none sm:text-lg"
+          />
+          <input
+            type="url"
+            vlaue={destination}
+            onChange={(e) => setDestination(e.target.value)}
+            placeholder="Add a destination link"
+            className="p-2 text-base border-b-2 border-gray-200 outline-none sm:text-lg"
+          />
+          <div className="flex flex-col">
+            <div>
+              <p className="mb-2 font-semibold text:lg sm:text-xl">
+                Choose Pin Category
+              </p>
+              <select
+                onChange={(e) => {
+                  setCategory(e.target.value)
+                }}
+                className="w-4/5 p-2 text-base border-b-2 border-gray-200 rounded-md outline-none cursor-pointer">
+                <option value="others" className="bg-white sm:text-bg">
+                  Select Category
+                </option>
+                {categories.map((item) => (
+                  <option
+                    className="text-base text-black capitalize bg-white border-0 outline-none "
+                    key={item.name}
+                    value={item.name}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-end justify-end mt-5">
+              <button
+                type="button"
+                onClick={savePin}
+                className="p-2 font-bold text-white bg-red-500 rounded-full outline-none w-28">
+                Save Pin
+              </button>
+            </div>
           </div>
         </div>
       </div>
