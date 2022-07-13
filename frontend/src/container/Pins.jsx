@@ -27,7 +27,7 @@ const Pins = ({ user }) => {
             path="/pin-detail/:pinId"
             element={<PinDetail user={user} />}
           />
-          <Route path="/create-pin" element={<createPin user={user} />} />
+          <Route path="/create-pin" element={<CreatePin user={user} />} />
           <Route
             path="/search"
             element={<Search search={searchTerm} setSearch={setSearchTerm} />}
