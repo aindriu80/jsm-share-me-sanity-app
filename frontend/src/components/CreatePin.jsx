@@ -158,7 +158,7 @@ const CreatePin = ({ user }) => {
           />
           <input
             type="url"
-            vlaue={destination}
+            value={destination}
             onChange={(e) => setDestination(e.target.value)}
             placeholder="Add a destination link"
             className="p-2 text-base border-b-2 border-gray-200 outline-none sm:text-lg"
