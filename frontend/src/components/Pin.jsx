@@ -101,9 +101,9 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
                   rel="noreferrer"
                   className="flex items-center gap-2 p-2 pl-4 pr-4 font-bold text-black bg-white rounded-full opacity-70 hover:100 hover:shadow-md">
                   <BsFillArrowUpRightCircleFill />
-                  {destination.length > 20
-                    ? destination.slice(8, 20)
-                    : destination.slice(8)}
+                  {destination.length > 15
+                    ? `${destination.slice(0, 15)}...`
+                    : destination}
                 </a>
               )}
               {postedBy?._id === user.googleId && (
@@ -121,17 +121,17 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
           </div>
         )}
       </div>
-        <Link
+      <Link
         to={`/user-profile/${postedBy?._id}`}
-          className="flex items-center gap-2 mt-2">
-          <img
-            className="object-cover w-8 h-8 rounded-full"
-            src={postedBy?.image}
-            alt="user-profile"
-          />
-          <p className="font-semibold capitalize">{postedBy?.userName}</p>
-        </Link>
-      </div>
+        className="flex items-center gap-2 mt-2">
+        <img
+          className="object-cover w-8 h-8 rounded-full"
+          src={postedBy?.image}
+          alt="user-profile"
+        />
+        <p className="font-semibold capitalize">{postedBy?.userName}</p>
+      </Link>
+    </div>
   )
 }
 
