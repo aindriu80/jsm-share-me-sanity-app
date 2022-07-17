@@ -21,18 +21,20 @@ const activeBtnStyles =
 const nonActiveBtnStyles =
   'bg-primary mr-4 text-black font-bold p-2 rounded-full w-20 outline-none'
 
+const clientId = import.meta.env.VITE_GOOGLE_API_TOKEN
 const UserProfile = () => {
   const [user, setUser] = useState(null)
   const [pins, setPins] = useState(null)
   const [text, setText] = useState('Created')
-  const [active, setActiveBtn] = useState('created')
+  const [activeBtn, setActiveBtn] = useState('created')
   const navigate = useNavigate()
   const { userId } = useParams()
 
+  const User = localStorage.getItem('user') !== 'undefined' ? JSON.parse(localStorage.getItem('user')) : localStorage.clear();
   useEffect(() => {
     const query = userQuery(userId)
     client.fetch(query).then((data) => {
-      SpeechSynthesisErrorEvent(data[0])
+      setUser(data[0])
     })
   }, [userId])
 
@@ -76,10 +78,10 @@ const UserProfile = () => {
               alt="user-pic"
             />
             <h1 className="mt-3 text-3xl font-bold text-center">
-              {user.username}
+              {user.userName}
             </h1>
-            <div className="absolute top-0 right-0 z-1 padding-2">
-              {userId === user._id && (
+            <div className="absolute top-0 right-0 p-2 z-1">
+            {userId === User.googleId && (
                 <GoogleLogout
                   clientId={clientId}
                   render={(renderProps) => (
@@ -89,7 +91,6 @@ const UserProfile = () => {
                       onClick={renderProps.onClick}
                       disabled={renderProps.disabled}>
                       <AiOutlineLogout color="red" fontSize="21" />
-                      Sign out with Google
                     </button>
                   )}
                   onLogoutSuccess={logout}
@@ -107,7 +108,7 @@ const UserProfile = () => {
                   setActiveBtn('created')
                 }}
                 className={`${
-                  activeBtn === 'created' ? activeBtnStyles : notActiveBtnStyles
+                  activeBtn === 'created' ? activeBtnStyles : nonActiveBtnStyles
                 }`}>
                 Created
               </button>
@@ -119,17 +120,17 @@ const UserProfile = () => {
                   setActiveBtn('saved')
                 }}
                 className={`${
-                  activeBtn === 'saved' ? activeBtnStyles : notActiveBtnStyles
+                  activeBtn === 'saved' ? activeBtnStyles : nonActiveBtnStyles
                 }`}>
                 Saved
               </button>
             </div>
 
-            {pins?.length ? (
               <div className="px-2">
                 <MasonryLayout pins={pins} />
               </div>
-            ) : (
+
+        {pins?.length === 0 && (
               <div className="flex items-center justify-center w-full mt-2 text-xl font-bold">
                 No Pins Found
               </div>
